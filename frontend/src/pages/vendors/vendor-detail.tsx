@@ -111,6 +111,10 @@ export const VendorDetail: React.FC = () => {
               <span className="font-mono font-bold text-slate-200">{vendor.gst_number}</span>
             </div>
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <span className="text-slate-400 font-medium">Category</span>
+              <span className="font-bold text-slate-200">{vendor.category || "Uncategorized"}</span>
+            </div>
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <span className="text-slate-400 font-medium">Quality Rating</span>
               <div className="flex items-center gap-1 text-amber-400 font-bold">
                 <Star size={13} fill="currentColor" />

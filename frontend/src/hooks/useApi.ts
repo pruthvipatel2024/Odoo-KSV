@@ -1,6 +1,6 @@
 import { useAuth } from "../context/AuthContext";
 
-export const API_BASE_URL = "http://localhost:5000";
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://192.168.1.8:5000";
 
 interface FetchOptions extends Omit<RequestInit, "body"> {
   body?: any;
@@ -71,6 +71,7 @@ export const useApi = () => {
     get: (endpoint: string, options?: FetchOptions) => request(endpoint, { ...options, method: "GET" }),
     post: (endpoint: string, body?: any, options?: FetchOptions) => request(endpoint, { ...options, method: "POST", body }),
     put: (endpoint: string, body?: any, options?: FetchOptions) => request(endpoint, { ...options, method: "PUT", body }),
+    patch: (endpoint: string, body?: any, options?: FetchOptions) => request(endpoint, { ...options, method: "PATCH", body }),
     delete: (endpoint: string, options?: FetchOptions) => request(endpoint, { ...options, method: "DELETE" }),
   };
 };

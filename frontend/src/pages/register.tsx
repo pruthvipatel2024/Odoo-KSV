@@ -20,6 +20,7 @@ export const Register: React.FC = () => {
     role: "VENDOR",
     company_name: "",
     gst_number: "",
+    category: "",
   });
 
   const [error, setError] = useState<string | null>(null);
@@ -43,8 +44,8 @@ export const Register: React.FC = () => {
     }
 
     if (formData.role === "VENDOR") {
-      if (!formData.company_name || !formData.gst_number) {
-        setError("Company Name and GST Number are required for vendor registration");
+      if (!formData.company_name || !formData.gst_number || !formData.category) {
+        setError("Company Name, GST Number, and Category are required for vendor registration");
         return;
       }
       if (formData.gst_number.length !== 15) {
@@ -164,6 +165,23 @@ export const Register: React.FC = () => {
                   placeholder="15-digit alphanumeric (e.g. 27AAAAA1111A1Z1)"
                   value={formData.gst_number}
                   onChange={handleChange}
+                  required
+                />
+                <Select
+                  label="Vendor Category *"
+                  name="category"
+                  value={formData.category}
+                  onChange={handleChange}
+                  options={[
+                    { value: "", label: "Select Category" },
+                    { value: "IT & Software", label: "IT & Software" },
+                    { value: "Hardware & Electronics", label: "Hardware & Electronics" },
+                    { value: "Office Supplies", label: "Office Supplies" },
+                    { value: "Consulting", label: "Consulting" },
+                    { value: "Logistics", label: "Logistics" },
+                    { value: "Manufacturing", label: "Manufacturing" },
+                    { value: "Other", label: "Other" }
+                  ]}
                   required
                 />
               </div>

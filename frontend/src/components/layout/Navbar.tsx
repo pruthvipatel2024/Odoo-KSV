@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
-import { Menu, User, ShieldAlert } from "lucide-react";
+import { Menu, User, Bell } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
+import { useQuery } from "@tanstack/react-query";
+import { useApi } from "../../hooks/useApi";
 import { Badge } from "../ui/badge";
+import { NotificationsDropdown } from "../NotificationsDropdown";
 
 interface NavbarProps {
   setIsOpen: (open: boolean) => void;
@@ -11,6 +14,17 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ setIsOpen }) => {
   const { user } = useAuth();
   const location = useLocation();
+  const api = useApi();
+  const [notifOpen, setNotifOpen] = useState(false);
+
+  const { data: countData } = useQuery<{ count: number }>({
+    queryKey: ["notifications-count"],
+    queryFn: () => api.get("/api/notifications/unread-count"),
+    refetchInterval: 30000,
+    enabled: !!user,
+  });
+
+  const unreadCount = countData?.count ?? 0;
 
   if (!user) return null;
 
@@ -22,6 +36,7 @@ export const Navbar: React.FC<NavbarProps> = ({ setIsOpen }) => {
     if (path.startsWith("/rfqs")) return "Request For Quotations (RFQs)";
     if (path.startsWith("/purchase-orders")) return "Purchase Orders (PO)";
     if (path.startsWith("/invoices")) return "Tax Invoice Management";
+    if (path.startsWith("/reports")) return "Reports & Analytics";
     return "ERP Workspace";
   };
 
@@ -40,7 +55,7 @@ export const Navbar: React.FC<NavbarProps> = ({ setIsOpen }) => {
         </h1>
       </div>
 
-      {/* Stats/Badges */}
+      {/* Right section */}
       <div className="flex items-center gap-4">
         {user.role === "VENDOR" && user.vendor_status && (
           <div className="hidden sm:flex items-center gap-2">
@@ -58,6 +73,29 @@ export const Navbar: React.FC<NavbarProps> = ({ setIsOpen }) => {
             </Badge>
           </div>
         )}
+
+        {/* Notifications Bell */}
+        <div className="relative">
+          <button
+            id="notifications-bell-btn"
+            onClick={() => setNotifOpen((prev) => !prev)}
+            className="relative h-8 w-8 rounded-full border border-slate-800 flex items-center justify-center bg-slate-900 text-slate-400 hover:text-slate-200 hover:border-slate-700 transition-colors cursor-pointer"
+            aria-label="Notifications"
+          >
+            <Bell size={15} />
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 h-4 w-4 flex items-center justify-center rounded-full bg-indigo-600 text-[9px] text-white font-bold">
+                {unreadCount > 9 ? "9+" : unreadCount}
+              </span>
+            )}
+          </button>
+          <NotificationsDropdown
+            isOpen={notifOpen}
+            onClose={() => setNotifOpen(false)}
+          />
+        </div>
+
+        {/* User Avatar */}
         <div className="h-8 w-8 rounded-full border border-slate-800 flex items-center justify-center bg-slate-900 text-slate-400">
           <User size={16} />
         </div>

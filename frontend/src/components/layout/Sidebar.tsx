@@ -9,6 +9,7 @@ import {
   FileCheck,
   ShieldCheck,
   Building,
+  BarChart3,
   Menu,
   X,
   LogOut
@@ -58,6 +59,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
       path: "/invoices",
       icon: <FileCheck size={18} />,
       roles: ["ADMIN", "PROCUREMENT", "MANAGER", "VENDOR"],
+    },
+    {
+      title: "Reports",
+      path: "/reports",
+      icon: <BarChart3 size={18} />,
+      roles: ["ADMIN", "PROCUREMENT", "MANAGER"],
     },
   ];
 

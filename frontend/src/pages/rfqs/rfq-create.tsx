@@ -17,6 +17,7 @@ export const RFQCreate: React.FC = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [deadline, setDeadline] = useState("");
+  const [items, setItems] = useState([{ description: "", quantity: 1 }]);
   const [selectedVendors, setSelectedVendors] = useState<number[]>([]);
   const [error, setError] = useState<string | null>(null);
 
@@ -52,6 +53,20 @@ export const RFQCreate: React.FC = () => {
     }
   };
 
+  const handleItemChange = (index: number, field: string, value: any) => {
+    const newItems = [...items];
+    newItems[index] = { ...newItems[index], [field]: value };
+    setItems(newItems);
+  };
+
+  const addItem = () => {
+    setItems([...items, { description: "", quantity: 1 }]);
+  };
+
+  const removeItem = (index: number) => {
+    setItems(items.filter((_, i) => i !== index));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -63,6 +78,11 @@ export const RFQCreate: React.FC = () => {
 
     if (selectedVendors.length === 0) {
       setError("Please assign this RFQ to at least one vendor");
+      return;
+    }
+
+    if (items.length === 0 || items.some(item => !item.description || item.quantity < 1)) {
+      setError("Please add at least one item with a valid description and quantity");
       return;
     }
 
@@ -78,6 +98,7 @@ export const RFQCreate: React.FC = () => {
       description,
       deadline: deadlineDate.toISOString(),
       vendor_ids: selectedVendors,
+      items: items.map(i => ({ ...i, quantity: Number(i.quantity) })),
     });
   };
 
@@ -127,6 +148,49 @@ export const RFQCreate: React.FC = () => {
               onChange={(e) => setDeadline(e.target.value)}
               required
             />
+
+            <div className="border-t border-slate-800/60 pt-4 mt-4 space-y-4">
+              <h4 className="text-xs font-bold text-indigo-400 uppercase tracking-wider mb-2">
+                Line Items
+              </h4>
+              {items.map((item, index) => (
+                <div key={index} className="flex items-center gap-3 bg-slate-900/30 p-3 rounded-md border border-slate-800">
+                  <div className="flex-1">
+                    <Input
+                      label="Item Description *"
+                      value={item.description}
+                      onChange={(e) => handleItemChange(index, "description", e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="w-24">
+                    <Input
+                      label="Qty *"
+                      type="number"
+                      min="1"
+                      value={item.quantity}
+                      onChange={(e) => handleItemChange(index, "quantity", e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="pt-5">
+                    <Button
+                      type="button"
+                      variant="danger"
+                      size="sm"
+                      onClick={() => removeItem(index)}
+                      disabled={items.length === 1}
+                      className="cursor-pointer px-3"
+                    >
+                      X
+                    </Button>
+                  </div>
+                </div>
+              ))}
+              <Button type="button" variant="outline" size="sm" onClick={addItem} className="cursor-pointer mt-2">
+                + Add Line Item
+              </Button>
+            </div>
           </CardContent>
         </Card>
 

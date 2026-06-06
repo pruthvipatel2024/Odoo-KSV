@@ -20,6 +20,7 @@ import POList from "./pages/purchase-orders/po-list";
 import PODetail from "./pages/purchase-orders/po-detail";
 import InvoiceList from "./pages/invoices/invoice-list";
 import InvoiceDetail from "./pages/invoices/invoice-detail";
+import Reports from "./pages/Reports";
 
 // Create QueryClient
 const queryClient = new QueryClient({
@@ -158,6 +159,18 @@ const AppContent: React.FC = () => {
           element={
             <ProtectedRoute>
               <InvoiceDetail />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Reports (Internal only) */}
+        <Route
+          path="/reports"
+          element={
+            <ProtectedRoute>
+              <RoleGuard allowedRoles={["ADMIN", "MANAGER", "PROCUREMENT"]}>
+                <Reports />
+              </RoleGuard>
             </ProtectedRoute>
           }
         />

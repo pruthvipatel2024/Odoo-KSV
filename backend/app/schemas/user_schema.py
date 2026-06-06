@@ -8,6 +8,7 @@ class UserRegisterSchema(Schema):
     role = fields.String(required=True, validate=validate.OneOf(['ADMIN', 'PROCUREMENT', 'MANAGER', 'VENDOR']))
     company_name = fields.String(required=False, validate=validate.Length(max=150)) # Only for Vendor register
     gst_number = fields.String(required=False, validate=validate.Length(equal=15)) # Only for Vendor register
+    category = fields.String(required=False, validate=validate.Length(max=100)) # Only for Vendor register
 
 class UserLoginSchema(Schema):
     email = fields.Email(required=True)

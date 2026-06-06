@@ -11,6 +11,7 @@ class VendorProfile(db.Model):
     contact_email = db.Column(db.String(150), nullable=False)
     contact_phone = db.Column(db.String(20), nullable=True)
     address = db.Column(db.Text, nullable=True)
+    category = db.Column(db.String(100), nullable=True)
     status = db.Column(db.String(20), default='PENDING', nullable=False)  # PENDING, APPROVED, REJECTED, BLACKLISTED
     rating = db.Column(db.Numeric(3, 2), default=5.00, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
@@ -37,6 +38,7 @@ class VendorProfile(db.Model):
             "contact_email": self.contact_email,
             "contact_phone": self.contact_phone,
             "address": self.address,
+            "category": self.category,
             "status": self.status,
             "rating": float(self.rating) if self.rating else 0.0,
             "created_at": self.created_at.isoformat(),

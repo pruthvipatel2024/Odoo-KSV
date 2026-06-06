@@ -59,6 +59,8 @@ def create_app(config_class=Config):
     from app.routes.po_routes import po_bp
     from app.routes.invoice_routes import invoice_bp
     from app.routes.dashboard_routes import dashboard_bp
+    from app.routes.notification_routes import notifications_bp
+    from app.routes.report_routes import report_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(vendor_bp)
@@ -67,6 +69,8 @@ def create_app(config_class=Config):
     app.register_blueprint(po_bp)
     app.register_blueprint(invoice_bp)
     app.register_blueprint(dashboard_bp)
+    app.register_blueprint(notifications_bp)
+    app.register_blueprint(report_bp)
 
     @app.route('/health', methods=['GET'])
     def health_check():

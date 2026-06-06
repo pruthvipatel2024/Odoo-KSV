@@ -50,6 +50,7 @@ class AuthService:
                 company_name=company_name,
                 gst_number=gst_number,
                 contact_email=email,
+                category=data.get('category'),
                 status='PENDING', # Default state is Pending admin/manager approval
                 rating=5.00
             )

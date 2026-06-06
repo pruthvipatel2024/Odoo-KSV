@@ -66,6 +66,19 @@ export const RFQDetail: React.FC = () => {
     enabled: !!id,
   });
 
+  // Initialize bid items when RFQ loads
+  React.useEffect(() => {
+    if (rfq?.items?.length) {
+      setBidItems(
+        rfq.items.map((item: any) => ({
+          item_description: item.description,
+          quantity: item.quantity,
+          unit_price: 0,
+        }))
+      );
+    }
+  }, [rfq]);
+
   // Fetch Received Bids (Internal roles only)
   const isInternal = user && user.role !== "VENDOR";
   const { data: bids, isLoading: bidsLoading } = useQuery({
@@ -241,6 +254,33 @@ export const RFQDetail: React.FC = () => {
               <div className="text-slate-300 whitespace-pre-wrap leading-relaxed">
                 {rfq.description || "No technical outline provided."}
               </div>
+
+              {rfq.items && rfq.items.length > 0 && (
+                <div className="mt-4 pt-4 border-t border-slate-800/60">
+                  <h4 className="text-xs font-bold text-indigo-400 uppercase tracking-wider mb-3">
+                    Line Items
+                  </h4>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-sm text-slate-300">
+                      <thead className="text-xs font-semibold text-slate-400 uppercase bg-slate-900/50">
+                        <tr>
+                          <th className="px-4 py-2 rounded-l-lg">Description</th>
+                          <th className="px-4 py-2 w-24 rounded-r-lg text-right">Quantity</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {rfq.items.map((item: any) => (
+                          <tr key={item.id} className="border-b border-slate-800/40 last:border-0">
+                            <td className="px-4 py-3">{item.description}</td>
+                            <td className="px-4 py-3 text-right font-mono">{item.quantity}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
               <div className="flex flex-wrap gap-4 border-t border-slate-800/60 pt-4 text-xs text-slate-400 font-semibold">
                 <div className="flex items-center gap-1">
                   <Calendar size={14} />
@@ -337,15 +377,17 @@ export const RFQDetail: React.FC = () => {
                         <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
                           Quote Line Items
                         </span>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={handleAddBidItem}
-                          className="px-2 py-1 h-fit text-xs border-slate-700 text-slate-300 hover:bg-slate-800 cursor-pointer"
-                        >
-                          <Plus size={12} className="mr-1" /> Add Item
-                        </Button>
+                        {(!rfq?.items || rfq.items.length === 0) && (
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={handleAddBidItem}
+                            className="px-2 py-1 h-fit text-xs border-slate-700 text-slate-300 hover:bg-slate-800 cursor-pointer"
+                          >
+                            <Plus size={12} className="mr-1" /> Add Item
+                          </Button>
+                        )}
                       </div>
                       
                       {bidItems.map((item, idx) => (
@@ -355,7 +397,7 @@ export const RFQDetail: React.FC = () => {
                         >
                           <div className="flex justify-between items-center">
                             <span className="text-[10px] font-bold text-indigo-400">#LINE {idx + 1}</span>
-                            {bidItems.length > 1 && (
+                            {(!rfq?.items || rfq.items.length === 0) && bidItems.length > 1 && (
                               <button
                                 type="button"
                                 onClick={() => handleRemoveBidItem(idx)}
@@ -370,6 +412,7 @@ export const RFQDetail: React.FC = () => {
                             value={item.item_description}
                             onChange={(e) => handleItemChange(idx, "item_description", e.target.value)}
                             required
+                            disabled={!!rfq?.items?.length} // Disable editing if RFQ has predefined items
                           />
                           <div className="grid grid-cols-2 gap-2">
                             <Input
@@ -380,6 +423,7 @@ export const RFQDetail: React.FC = () => {
                               onChange={(e) => handleItemChange(idx, "quantity", parseInt(e.target.value) || 0)}
                               min={1}
                               required
+                              disabled={!!rfq?.items?.length} // Disable editing if RFQ has predefined items
                             />
                             <Input
                               type="number"

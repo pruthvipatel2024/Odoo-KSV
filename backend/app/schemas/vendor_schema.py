@@ -6,12 +6,14 @@ class VendorCreateSchema(Schema):
     contact_email = fields.Email(required=True)
     contact_phone = fields.String(required=False, validate=validate.Length(max=20))
     address = fields.String(required=False)
+    category = fields.String(required=False, validate=validate.Length(max=100))
 
 class VendorUpdateSchema(Schema):
     company_name = fields.String(required=False, validate=validate.Length(min=2, max=150))
     contact_email = fields.Email(required=False)
     contact_phone = fields.String(required=False, validate=validate.Length(max=20))
     address = fields.String(required=False)
+    category = fields.String(required=False, validate=validate.Length(max=100))
     status = fields.String(required=False, validate=validate.OneOf(['PENDING', 'APPROVED', 'REJECTED', 'BLACKLISTED']))
     rating = fields.Float(required=False, validate=validate.Range(min=0.0, max=5.0))
 
@@ -23,6 +25,7 @@ class VendorResponseSchema(Schema):
     contact_email = fields.Email()
     contact_phone = fields.Str(allow_none=True)
     address = fields.Str(allow_none=True)
+    category = fields.Str(allow_none=True)
     status = fields.Str()
     rating = fields.Float()
     created_at = fields.DateTime()

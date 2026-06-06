@@ -66,6 +66,17 @@ class RFQService:
         
         # Associate vendors
         rfq.vendors.extend(vendors)
+        
+        # Add items
+        from app.models.rfq_item import RFQItem
+        items_data = data.get('items', [])
+        for item_data in items_data:
+            rfq_item = RFQItem(
+                description=item_data['description'],
+                quantity=item_data['quantity']
+            )
+            rfq.items.append(rfq_item)
+
         db.session.add(rfq)
         db.session.commit()
         
@@ -76,7 +87,8 @@ class RFQService:
             details=f"RFQ {rfq_number} created with {len(vendors)} assigned vendors."
         )
         
-        # Send Email notification to each vendor
+        # Send Email + In-App notification to each vendor
+        from app.services.notification_service import NotificationService
         for vendor in vendors:
             subject = f"[VendorBridge] New RFQ Invitation: {rfq_number}"
             body = f"""
@@ -90,6 +102,15 @@ class RFQService:
             <p>Procurement Team - VendorBridge</p>
             """
             send_email(vendor.contact_email, subject, body)
+            # Also send in-app notification if vendor has a linked user
+            if vendor.user_id:
+                NotificationService.create(
+                    user_id=vendor.user_id,
+                    title=f"New RFQ: {rfq_number}",
+                    message=f"You have been invited to bid on '{rfq.title}'. Deadline: {rfq.deadline.strftime('%Y-%m-%d')}.",
+                    type="RFQ",
+                    link=f"/rfqs/{rfq.id}"
+                )
             
         return rfq
 

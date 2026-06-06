@@ -7,11 +7,17 @@ class RFQDocumentSchema(Schema):
     file_url = fields.Str()
     created_at = fields.DateTime()
 
+class RFQItemSchema(Schema):
+    id = fields.Int(dump_only=True)
+    description = fields.String(required=True, validate=validate.Length(min=3, max=255))
+    quantity = fields.Int(required=True, validate=validate.Range(min=1))
+
 class RFQCreateSchema(Schema):
     title = fields.String(required=True, validate=validate.Length(min=3, max=150))
     description = fields.String(required=False)
     deadline = fields.DateTime(required=True)
     vendor_ids = fields.List(fields.Int(), required=True, validate=validate.Length(min=1))
+    items = fields.List(fields.Nested(RFQItemSchema), required=True, validate=validate.Length(min=1))
 
 class RFQUpdateSchema(Schema):
     title = fields.String(required=False, validate=validate.Length(min=3, max=150))
@@ -32,3 +38,4 @@ class RFQResponseSchema(Schema):
     updated_at = fields.DateTime()
     vendors = fields.List(fields.Nested(VendorResponseSchema))
     documents = fields.List(fields.Nested(RFQDocumentSchema))
+    items = fields.List(fields.Nested(RFQItemSchema))

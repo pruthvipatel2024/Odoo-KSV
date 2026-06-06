@@ -124,7 +124,7 @@ class POService:
             details=f"PO {po.po_number} status updated from {old_status} to {new_status}. Remarks: {remarks}"
         )
         
-        # If PO is approved or sent, notify vendor by email
+        # If PO is approved or sent, notify vendor by email + in-app
         if new_status in ['APPROVED', 'SENT'] and po.vendor:
             subject = f"[VendorBridge] Purchase Order Awarded: {po.po_number}"
             body = f"""
@@ -138,5 +138,15 @@ class POService:
             <p>Procurement Team - VendorBridge</p>
             """
             send_email(po.vendor.contact_email, subject, body)
+            # In-app notification
+            if po.vendor.user_id:
+                from app.services.notification_service import NotificationService
+                NotificationService.create(
+                    user_id=po.vendor.user_id,
+                    title=f"PO Awarded: {po.po_number}",
+                    message=f"You have been awarded the purchase order for '{po.rfq.title}'. Total: INR {po.total_amount:,.2f}.",
+                    type="PO",
+                    link=f"/purchase-orders/{po.id}"
+                )
             
         return po

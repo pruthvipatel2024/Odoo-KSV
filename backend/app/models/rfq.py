@@ -25,6 +25,7 @@ class RFQ(db.Model):
     creator = db.relationship('User', foreign_keys=[created_by])
     vendors = db.relationship('VendorProfile', secondary=rfq_vendors, back_populates='rfqs')
     documents = db.relationship('RFQDocument', back_populates='rfq', cascade="all, delete-orphan")
+    items = db.relationship('RFQItem', back_populates='rfq', cascade="all, delete-orphan")
     quotations = db.relationship('Quotation', back_populates='rfq', cascade="all, delete-orphan")
     purchase_orders = db.relationship('PurchaseOrder', back_populates='rfq')
 
@@ -42,7 +43,8 @@ class RFQ(db.Model):
             "created_by": self.created_by,
             "created_at": self.created_at.isoformat(),
             "updated_at": self.updated_at.isoformat(),
-            "vendors": [v.to_dict() for v in self.vendors]
+            "vendors": [v.to_dict() for v in self.vendors],
+            "items": [item.to_dict() for item in self.items]
         }
 
 class RFQDocument(db.Model):
