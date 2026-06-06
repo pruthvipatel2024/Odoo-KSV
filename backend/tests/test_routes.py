@@ -117,7 +117,13 @@ class TestRoutes(unittest.TestCase):
             "title": "New Server Purchase",
             "description": "5 Rack mountable high memory server nodes",
             "deadline": (datetime.utcnow() + timedelta(days=10)).isoformat(),
-            "vendor_ids": [self.vendor.id]
+            "vendor_ids": [self.vendor.id],
+            "items": [
+                {
+                    "description": "Rack Server Node X",
+                    "quantity": 5
+                }
+            ]
         }
         resp = self.client.post('/api/rfqs', data=json.dumps(rfq_payload), headers=o_headers)
         self.assertEqual(resp.status_code, 201)

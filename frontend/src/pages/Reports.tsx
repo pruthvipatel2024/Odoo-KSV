@@ -65,7 +65,7 @@ export const Reports: React.FC = () => {
   const handleDownload = async (endpoint: string, filename: string) => {
     try {
       // Get the auth token
-      const token = localStorage.getItem("access_token");
+      const token = localStorage.getItem("vendorbridge_token");
       const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://192.168.1.8:5000";
       const response = await fetch(`${baseUrl}${endpoint}`, {
         headers: { Authorization: `Bearer ${token}` },

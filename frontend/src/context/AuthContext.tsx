@@ -23,25 +23,20 @@ interface AuthContextType {
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [token, setToken] = useState<string | null>(null);
-  const [user, setUser] = useState<UserProfile | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const storedToken = localStorage.getItem("vendorbridge_token");
+  const [token, setToken] = useState<string | null>(() => localStorage.getItem("vendorbridge_token"));
+  const [user, setUser] = useState<UserProfile | null>(() => {
     const storedUser = localStorage.getItem("vendorbridge_user");
-    
-    if (storedToken && storedUser) {
+    if (storedUser) {
       try {
-        setToken(storedToken);
-        setUser(JSON.parse(storedUser));
+        return JSON.parse(storedUser);
       } catch (e) {
         localStorage.removeItem("vendorbridge_token");
         localStorage.removeItem("vendorbridge_user");
       }
     }
-    setIsLoading(false);
-  }, []);
+    return null;
+  });
+  const [isLoading, setIsLoading] = useState(false);
 
   const login = (newToken: string, newUser: UserProfile) => {
     localStorage.setItem("vendorbridge_token", newToken);
