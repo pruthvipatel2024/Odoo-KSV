@@ -129,7 +129,7 @@ tmp/
 
 # ------------------------------------------
 
-invoices/
+backend/uploads/invoices/
 purchase_orders/
 reports/
 
