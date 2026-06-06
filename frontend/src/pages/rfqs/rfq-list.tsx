@@ -71,7 +71,7 @@ export const RFQList: React.FC = () => {
               className="pl-9"
             />
           </div>
-          <div className="flex gap-2 shrink-0 overflow-x-auto pb-1">
+          <div className="flex gap-2 pt-2 pl-5 pr-5 shrink-0 overflow-x-auto pb-1">
             {[
               { label: "All RFQs", value: "" },
               { label: "Draft", value: "DRAFT" },

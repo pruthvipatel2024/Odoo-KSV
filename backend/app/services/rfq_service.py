@@ -48,6 +48,10 @@ class RFQService:
         else:
             deadline = deadline_str
             
+        if deadline.tzinfo is not None:
+            from datetime import timezone
+            deadline = deadline.astimezone(timezone.utc).replace(tzinfo=None)
+            
         if deadline <= datetime.utcnow():
             raise ValueError("RFQ deadline must be in the future")
 

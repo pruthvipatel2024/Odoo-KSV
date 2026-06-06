@@ -31,6 +31,14 @@ def create_app(config_class=Config):
     def missing_token_callback(error):
         return jsonify({"msg": "Request does not contain an access token", "error": "authorization_required"}), 401
 
+    @app.errorhandler(Exception)
+    def handle_exception(e):
+        from werkzeug.exceptions import HTTPException
+        if isinstance(e, HTTPException):
+            return jsonify({"msg": e.description}), e.code
+        app.logger.exception(f"Unhandled exception: {e}")
+        return jsonify({"msg": "An internal server error occurred", "error": str(e)}), 500
+
     # Ensure local upload directories exist
     upload_dir = app.config['UPLOAD_FOLDER']
     os.makedirs(upload_dir, exist_ok=True)
