@@ -66,7 +66,7 @@ export const Reports: React.FC = () => {
     try {
       // Get the auth token
       const token = localStorage.getItem("vendorbridge_token");
-      const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://192.168.1.8:5000";
+      const baseUrl = import.meta.env.VITE_API_BASE_URL || "https://odoo-ksv.onrender.com";
       const response = await fetch(`${baseUrl}${endpoint}`, {
         headers: { Authorization: `Bearer ${token}` },
       });

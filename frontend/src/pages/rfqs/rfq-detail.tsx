@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useApi } from "../../hooks/useApi";
+import { useApi, API_BASE_URL } from "../../hooks/useApi";
 import { useAuth } from "../../context/AuthContext";
 import {
   ChevronLeft,
@@ -313,7 +313,7 @@ export const RFQDetail: React.FC = () => {
                         <span className="font-semibold">{doc.file_name}</span>
                       </div>
                       <a
-                        href={doc.file_url.startsWith("/") ? `http://localhost:5000${doc.file_url}` : doc.file_url}
+                        href={doc.file_url.startsWith("/") ? `${API_BASE_URL}${doc.file_url}` : doc.file_url}
                         target="_blank"
                         rel="noreferrer"
                         className="text-indigo-400 hover:text-indigo-300 font-bold hover:underline"
